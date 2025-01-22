@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="TaskDemo.css" />
+</head>
+<body>
+  <header>
+    <h1 id="logo">CSS Demo Site</h1>
+    <nav>
+        <div id="hamburger-menu">&#9776;</div>
+        <ul id="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">Gallery</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+      <main>
+        <span id="badge">NEW</span>
+        <article>
+            <div id="nepal">
+                <p>This is the main tag for todays task</p>
+                <p>Nepal has the following:</p>
+                <ul>
+                    <li>Himala</li>
+                    <li>Hill</li>
+                    <li>tarai</li>
+                </ul>
+                <div class="card-grid">
+                    <div class="card">
+                      <h3>Card 1</h3>
+                      <p>Demonstrates grid-based card layout with auto-fit</p>
+                    </div>
+                    <div class="card">
+                      <h3>Card 2</h3>
+                      <p>Shows responsive design principles</p>
+                    </div>
+                    <div class="card">
+                      <h3>Card 3</h3>
+                      <p>Illustrates box-shadow and border-radius</p>
+                    </div>
+                  </div>
+            </div>
+            <aside>
+                <p id="sidebar">Sidebar section</p>
+                <p>This sidebar uses sticky positioning to stay visible while scrolling.</p>
+                <p>Try scrolling the page to see how it works!</p>
+            </aside>
+            
+        </article>
+        <footer>
+            <div id="footer-content">
+                <p>&copy; 2025 CSS Demo Site</p>
+                <p>Built with semantic HTML and modern CSS</p>
+            </div>
+        </footer>
+
+      </main>
+</body>
+<script>
+  const hamburgerMenu = document.getElementById('hamburger-menu');
+const navLinks = document.getElementById('nav-links');
+
+// Toggle the navigation menu when the hamburger menu is clicked
+hamburgerMenu.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+});
+
+// Optional: Close the menu when clicking outside
+document.addEventListener('click', (event) => {
+    if (!hamburgerMenu.contains(event.target) && !navLinks.contains(event.target)) {
+        navLinks.classList.remove('active');
+    }
+});
+
+</script>
+</html>
