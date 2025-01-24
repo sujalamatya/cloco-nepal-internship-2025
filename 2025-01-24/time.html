@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+        legend{
+            margin-left: 30%;
+            font-size: x-large;
+        }
+        
+        #tim{
+            font-size: larger;
+        }
+        form{
+            
+            margin: 10px;
+        }
+        fieldset{
+            display: flex;
+            flex-direction: column; 
+            border-radius: 8px;
+            justify-content: center; 
+            align-items: center;
+            height: 90dvh;
+            width: 80dvh;
+            gap: 10px;
+        }
+        div{
+            display: flex;
+            justify-content: center; /* Horizontally center */
+            align-items: center;    /* Vertically center */
+            height: 100vh;          
+            margin: 0; 
+        }
+        button{
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid black;
+            transition: all 0.3s ease-in-out;
+        }
+        #time{
+            padding: 10px;
+            border-radius: 8px;
+        }
+        #timer{
+            font-weight: bold;
+            font-size: large;
+        }
+
+    </style>
+</head>
+<body>
+    <div>
+        <form >
+            <fieldset>
+              <legend>Countdown Timer</legend>
+              <label for="time" id="tim">Enter time:</label>
+              <input type="time" id="time" required value="00:00"><br>
+              <button onclick="return countDown()" value="Start">Start</button><br>
+              <p id="timer"></p>
+            </fieldset>
+          </form>
+          
+    </div>
+    
+      
+</body>
+<script>
+    function countDown() {
+    
+    const timeInput = document.querySelector('#time').value;
+
+    //valid time 
+    if (!timeInput) {
+        alert("Please enter a valid time.");
+        return false;
+    }
+
+    // Parse the input (HH:MM) into hours and minutes
+    const [hours, minutes] = timeInput.split(":").map(Number);
+
+    // Get the current time
+    const now = new Date();
+
+    // Set the target time based on the input
+    const targetTime = new Date();
+    targetTime.setHours(hours, minutes, 0, 0);
+
+    // Check if the target time is in the future
+    if (targetTime <= now) {
+        alert("Please enter a future time.");
+        return false;
+    }
+    const timerDisplay = document.getElementById('timer'); //<p> Tag
+    const countdownInterval = setInterval(() => {
+        // Get the current time again (since it's dynamic)
+        const currentTime = new Date();
+        
+        // Calculate the remaining time in milliseconds
+        const timeLeft = targetTime - currentTime;
+
+        // If time is up, stop the countdown
+        if (timeLeft <= 0) {
+            clearInterval(countdownInterval); // Stop the timer
+            timerDisplay.textContent = "Time's up!";
+            return;
+        }
+
+        // Convert milliseconds into hours, minutes, and seconds
+        const remainingHours = Math.floor(timeLeft / (1000 * 60 * 60));
+        const remainingMinutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const remainingSeconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+        timerDisplay.textContent = `${remainingHours}h ${remainingMinutes}m ${remainingSeconds}s `;
+    }, 1000); // Update every 1 second
+
+    return false; // Too prevent form submission
+}
+
+    
+</script>
+</html>

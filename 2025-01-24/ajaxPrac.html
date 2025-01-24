@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #feed {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .country-card {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+            width: 150px;
+        }
+        .country-card img {
+            width: 100%;
+            height: auto;
+        }
+        button{
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid black;
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="showCountries()">show countries</button>
+    <div id="feed"></div>
+    <script>
+        function showCountries() {
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://restcountries.com/v3.1/all', true);
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log("success");
+                    let countries = JSON.parse(this.response);
+                    console.log(countries);
+
+                    countries.forEach(country => {
+                        
+                        const countryCard = document.createElement('div');
+                        const countryCardImg = document.createElement('img');
+                        const countryCardName = document.createElement('p');
+
+                        
+                        countryCard.className = 'country-card';
+                        countryCardName.textContent = country.name.common;
+                        countryCardImg.src = country.flags.png;
+                        countryCardImg.alt = `${country.name.common} flag`;
+
+                        
+                        countryCard.appendChild(countryCardName);
+                        countryCard.appendChild(countryCardImg);
+
+                        document.getElementById('feed').appendChild(countryCard);
+                    });
+                } else {
+                    console.error('Failed to fetch countries:', xhr.status);
+                }
+            };
+
+            xhr.onerror = function () {
+                console.error('An error occurred while making the request.');
+            };
+
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
