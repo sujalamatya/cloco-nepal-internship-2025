@@ -12,40 +12,30 @@
             font-size: 1.2em;
 
             }
-
-
-
             form {
-
-
             padding-top: 25px;
             padding-bottom: 25px;
             margin: 60px ;
             }
 
             h1 {
-
             font-size: 1.5em;
             text-align: center;
             text-transform: capitalize;
-
             }
 
             fieldset{
             background-color: white;
             border-radius: 8px;
-
+            }
+            .error{
+                color: red;
             }
 
-            #errorN {
-
-            color: red;
-
-        }
     </style>
 </head>
 <body>
-    <form onsubmit="return validate()" name="From"> 
+    <form  name="From"> 
         <h1>Application for Permission to Date My Daughter</h1>
         <p><b>Note:</b> Form is to be completed at least 21 days prior to date</p>
         <fieldset>
@@ -116,7 +106,7 @@
             <p>Upload Police Clearance Certificate, Bank Statement and Medical Certificates here:</p>
             <input type="file" id="files" name="files" multiple> 
         </fieldset>
-        <button type="submit">Send your application</button>
+        <button type="submit" onclick="validate()">Send your application</button>
     </form>
 
     <script>
@@ -124,19 +114,31 @@
     
             let name = document.getElementById("name").value;
             let address = document.getElementById("address").value;
+            let email= document.getElementById("email").value;
+            let num=document.getElementById("phone").value;
 
             document.getElementById("nameError").textContent = "";
             document.getElementById("addressError").textContent = "";
+            document.getElementById("emailError").textContent = "";
+            document.getElementById("phoneError").textContent = "";
 
             if (name === "") {
                 document.getElementById("nameError").textContent = "**Name is required";
                 return false;
             }
-            if (address === "") {
+            if (address === "" && address.length()<=3) {
                 document.getElementById("addressError").textContent = "**Address is required";
                 return false;
             }
-
+            if (email === "") {
+                document.getElementById("emailError").textContent = "**email is required";
+                return false;
+            }
+            if (num === "") {
+                document.getElementById("phoneError").textContent = "**phone number is required";
+                return false;
+            } 
+            
             return true;
         }
     </script>
