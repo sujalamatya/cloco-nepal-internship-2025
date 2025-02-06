@@ -1,0 +1,82 @@
+{
+  "books": [
+    {
+      "id": "1",
+      "name": "The Daily Stoic",
+      "author": "Ryan Holiday",
+      "price": "$12.00"
+    },
+    {
+      "id": "2",
+      "name": "Atomic Habits",
+      "author": "James Clear",
+      "price": "$15.00"
+    },
+    {
+      "id": "3",
+      "name": "The Psychology of Money",
+      "author": "Morgan Housel",
+      "price": "$18.00"
+    },
+    {
+      "id": "4",
+      "name": "Sapiens",
+      "author": "Yuval Noah Harari",
+      "price": "$20.00"
+    },
+    {
+      "id": "5",
+      "name": "The Subtle Art of Not Giving a F*ck",
+      "author": "Mark Manson",
+      "price": "$17.00"
+    },
+    {
+      "id": "6",
+      "name": "Meditations",
+      "author": "Marcus Aurelius",
+      "price": "$14.00"
+    },
+    {
+      "id": "7",
+      "name": "Deep Work",
+      "author": "Cal Newport",
+      "price": "$16.00"
+    },
+    {
+      "id": "8",
+      "name": "Muna madan",
+      "author": "Laxmi Prashad Devkota",
+      "price": "$16.00"
+    },
+    {
+      "id": "9",
+      "name": "Suna madan",
+      "author": "Laxmi Prashad Devkota",
+      "price": "$16.00"
+    },
+    {
+      "id": "10",
+      "name": "CSCL",
+      "author": "naveen Manandhar",
+      "price": "$20.00"
+    },
+    {
+      "id": "11",
+      "name": "Harry Potter ",
+      "author": "JK Rolling",
+      "price": "$30.00"
+    },
+    {
+      "id": "12",
+      "name": "Business studies",
+      "author": "Ashok Bhandari",
+      "price": "$1"
+    },
+    {
+      "id": "13",
+      "name": "Parijat",
+      "author": "Bisnu Kumari Waiba",
+      "price": "$450"
+    }
+  ]
+}
