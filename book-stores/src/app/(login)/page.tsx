@@ -1,3 +1,4 @@
+// Login / Landing page imports loginform
 import { LoginForm } from "@/components/login-form";
 
 export default function Page() {

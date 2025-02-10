@@ -9,6 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
+import { NumberTicker } from "@/components/magicui/number-ticker";
 import {
   SidebarInset,
   SidebarProvider,
@@ -25,8 +26,39 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-// import Link from "next/link";
+import { useEffect, useState } from "react";
+
+// Book type interface
+interface Book {
+  id: string;
+  name: string;
+  author: string;
+  price: string;
+}
+
 export default function Page() {
+  const [books, setBooks] = useState<Book[]>([]);
+  const [uniqueAuthors, setUniqueAuthors] = useState<number>(0);
+
+  useEffect(() => {
+    // Fetch books data
+    async function fetchBooks() {
+      try {
+        const response = await fetch("http://localhost:4000/books");
+        const data: Book[] = await response.json();
+        setBooks(data);
+
+        // Calculate unique authors
+        const authorsSet = new Set(data.map((book) => book.author));
+        setUniqueAuthors(authorsSet.size);
+      } catch (error) {
+        console.error("Error fetching books:", error);
+      }
+    }
+
+    fetchBooks();
+  }, []);
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -46,8 +78,7 @@ export default function Page() {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        {/* <div className="flex flex-1 flex-col gap-4 p-4  "> */}
-        {/* replace with grid-rows-2 if needed later */}
+
         <div className="grid grid-cols-3 gap-4 p-4 h-[120vh] overflow-hidden">
           {/* Card 1: Large card on the left spanning 4 rows */}
           <div className="row-span-2 rounded-xl ">
@@ -141,11 +172,15 @@ export default function Page() {
                   </div>
                 </div>
               </CardTitle>
-              <CardDescription>Total Autors:</CardDescription>
+              <CardDescription>Total Authors:</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="">
-                <h1 className=" font-bold text-4xl">700</h1>
+                {/* <h1 className=" font-bold text-4xl">{uniqueAuthors}</h1> */}
+                <NumberTicker
+                  value={uniqueAuthors}
+                  className="whitespace-pre-wrap text-4xl font-bold tracking-tighter text-black dark:text-white"
+                />
               </div>
             </CardContent>
           </Card>
@@ -177,7 +212,10 @@ export default function Page() {
               <CardDescription>Total Customers:</CardDescription>
             </CardHeader>
             <CardContent>
-              <h1 className=" font-bold text-4xl ">1000</h1>
+              <NumberTicker
+                value={100}
+                className="whitespace-pre-wrap text-4xl font-bold tracking-tighter text-black dark:text-white"
+              />
             </CardContent>
           </Card>
 

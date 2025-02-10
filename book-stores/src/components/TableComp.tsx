@@ -3,11 +3,23 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
+  // TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import {
   Popover,
   PopoverContent,
@@ -16,6 +28,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Router } from "next/router";
 // import Link from "next/link";
 
 // Define the Book type
@@ -28,9 +42,11 @@ interface Book {
 
 export default function Home() {
   const [books, setBooks] = useState<Book[]>([]);
+  const router = useRouter();
   const [totalBooks, setTotalBooks] = useState("0");
   // const [showAll, setShowAll] = useState(true);
   const [newBook, setNewBook] = useState({ name: "", author: "", price: "" });
+  const [editingBook, setEditingBook] = useState<Book | null>(null);
 
   useEffect(() => {
     fetchBooks();
@@ -47,27 +63,18 @@ export default function Home() {
     }
   }
 
-  async function addBook(e: React.FormEvent) {
-    e.preventDefault();
-    if (!newBook.name || !newBook.author || !newBook.price) return;
-
-    const newId = (books.length + 1).toString();
-    const bookToAdd = { id: newId, ...newBook };
-
+  async function deleteBook(bookId: string) {
     try {
-      const response = await fetch("http://localhost:4000/books", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(bookToAdd),
+      const response = await fetch(`http://localhost:4000/books/${bookId}`, {
+        method: "DELETE",
       });
 
       if (response.ok) {
-        setBooks([...books, bookToAdd]);
-        setNewBook({ name: "", author: "", price: "" });
-        setTotalBooks(newId);
+        setBooks(books.filter((book) => book.id !== bookId));
+        setTotalBooks((books.length - 1).toString());
       }
     } catch (error) {
-      console.error("Error adding book:", error);
+      console.error("Error deleting book:", error);
     }
   }
 
@@ -109,10 +116,13 @@ export default function Home() {
               <TableCell className="font-medium">{book.id}</TableCell>
               <TableCell>{book.name}</TableCell>
               <TableCell>{book.author}</TableCell>
-              <TableCell className="text-right">{book.price}</TableCell>
+              <TableCell className="text-right">Rs. {book.price}</TableCell>
               <TableCell>
                 <div className="flex justify-between w-10">
-                  <button>
+                  <button
+                    onClick={() => router.push(`/books/${book.id}`)}
+                    className="edit-btn"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -128,104 +138,77 @@ export default function Home() {
                       />
                     </svg>
                   </button>
-                  <button>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="size-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                      />
-                    </svg>
-                  </button>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <button className="deletebutton">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                          />
+                        </svg>
+                      </button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          delete the book.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => deleteBook(book.id)}
+                          className="bg-destructive"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
-        {/* <TableFooter>
-          <TableRow>
-            <TableCell colSpan={5} className="font-medium text-center">
-              Showing {showAll ? books.length : Math.min(5, books.length)} of{" "}
-              {books.length} books
-            </TableCell>
-          </TableRow>
-        </TableFooter> */}
       </Table>
 
       {/* Popover for Adding a Book */}
       <div className="flex justify-center my-4">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button className="bg-muted-foreground text-white hover:bg-green-700">
-              Add Book
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="size-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
-                />
-              </svg>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="p-4 w-80 bg-popover shadow-md rounded-lg">
-            <h3 className="text-lg font-bold mb-3">Add a New Book</h3>
-            <form onSubmit={addBook} className="flex flex-col gap-3">
-              <Input
-                type="text"
-                placeholder="Book Name"
-                value={newBook.name}
-                onChange={(e) =>
-                  setNewBook({ ...newBook, name: e.target.value })
-                }
-              />
-              <Input
-                type="text"
-                placeholder="Author"
-                value={newBook.author}
-                onChange={(e) =>
-                  setNewBook({ ...newBook, author: e.target.value })
-                }
-              />
-              <Input
-                type="text"
-                placeholder="Price"
-                value={newBook.price}
-                onChange={(e) =>
-                  setNewBook({ ...newBook, price: e.target.value })
-                }
-              />
-              <Button
-                type="submit"
-                className="bg-sidebar-ring hover:bg-blue-700"
-              >
-                Submit
-              </Button>
-            </form>
-          </PopoverContent>
-        </Popover>
+        {/* <Popover>
+          <PopoverTrigger asChild> */}
+        <Button
+          className="bg-muted-foreground text-white hover:bg-green-700"
+          onClick={() => router.push("/books/add")}
+        >
+          Add Book
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
+            />
+          </svg>
+        </Button>
       </div>
-      {/* Show More Button
-      {!showAll && books.length > 5 && (
-        <div className="flex justify-center mt-4">
-          <Button className="bg-blue-500 hover:bg-blue-700" onClick={() => setShowAll(true)}>
-            Show More
-          </Button>
-        </div>
-      )} */}
     </>
   );
 }
