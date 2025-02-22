@@ -12,6 +12,10 @@ export default function Home() {
         className="text-black"
         onChange={({ target }) => setName(target.value)}
       />
+      {/* <textarea
+        className="text-black"
+        onChange={({ target }) => setName(target.value)}
+      ></textarea> */}
       <p className=" m-5">
         Please go to{" "}
         <a
