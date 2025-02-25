@@ -1,6 +1,7 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .models import Author,Book
+from .forms import BookForm 
 
 def index(request):
     return render(request, 'bookstore/index.html')  # Load the template
@@ -13,4 +14,13 @@ def book_list(request):
     books = Book.objects.all()  # Get all books from the database
     return render(request, 'bookstore/book_list.html', {'books': books})
 
-
+def add_book(request):
+    if request.method == "POST":
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("book_list")  # Redirect to the book list page
+    else:
+        form = BookForm()
+    
+    return render(request, "bookstore/add_book.html", {"form": form})

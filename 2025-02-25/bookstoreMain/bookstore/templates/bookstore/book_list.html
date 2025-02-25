@@ -36,6 +36,24 @@
       tr:hover {
         background-color: #f1f1f1;
       }
+      .button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .button {
+        padding: 12px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .button:hover {
+        background-color: #0056b3;
+      }
     </style>
   </head>
   <body>
@@ -61,6 +79,9 @@
         {% endfor %}
       </tbody>
     </table>
+    <div class="button-container">
+      <a href="{% url 'add_book' %}" class="button">Add Book</a>
+    </div>
     {% else %}
     <p>No books found.</p>
     {% endif %}
