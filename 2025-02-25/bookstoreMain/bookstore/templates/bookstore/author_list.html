@@ -65,6 +65,7 @@
           <th>ID</th>
           <th>Name</th>
           <th>Genre</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -73,6 +74,15 @@
           <td>{{ author.id }}</td>
           <td>{{ author.name }}</td>
           <td>{{ author.genre }}</td>
+          <td>
+            <a href="{% url 'edit_author' author.id %}" class="button">Edit</a>
+            <a
+              href="{% url 'delete_author' author.id %}"
+              class="button"
+              onclick="return confirm('Are you sure you want to delete this author?')"
+              >Delete</a
+            >
+          </td>
         </tr>
         {% endfor %}
       </tbody>

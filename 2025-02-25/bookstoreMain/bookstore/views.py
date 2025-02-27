@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from .models import Author,Book
 from .forms import BookForm , AuthorForm
 
@@ -35,3 +35,23 @@ def add_author(request):
         form = AuthorForm()
     
     return render(request, "bookstore/add_author.html", {"form": form})
+
+def edit_author(request, author_id):
+    author = get_object_or_404(Author, pk=author_id)
+    
+    if request.method == 'POST':
+        form = AuthorForm(request.POST, instance=author)
+        if form.is_valid():
+            form.save()
+            return redirect('author_list')
+    else:
+        form = AuthorForm(instance=author)
+    
+    return render(request, 'bookstore/edit_author.html', {'form': form, 'author': author})
+
+
+
+def delete_author(request, author_id):
+    author = get_object_or_404(Author, pk=author_id)
+    author.delete()
+    return redirect('author_list')  # Redirect to the list of authors after deletion
