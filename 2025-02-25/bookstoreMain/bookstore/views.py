@@ -55,3 +55,23 @@ def delete_author(request, author_id):
     author = get_object_or_404(Author, pk=author_id)
     author.delete()
     return redirect('author_list')  # Redirect to the list of authors after deletion
+
+# Edit Book
+def edit_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    
+    if request.method == 'POST':
+        form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            return redirect('book_list')
+    else:
+        form = BookForm(instance=book)
+    
+    return render(request, 'bookstore/edit_book.html', {'form': form, 'book': book})
+
+# Delete Book
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    book.delete()
+    return redirect('book_list')

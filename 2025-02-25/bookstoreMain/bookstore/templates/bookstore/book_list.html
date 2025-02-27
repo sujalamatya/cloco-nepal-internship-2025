@@ -42,17 +42,23 @@
         margin-top: 20px;
       }
       .button {
-        padding: 12px 20px;
+        padding: 8px 12px;
         background-color: #007bff;
         color: white;
         text-decoration: none;
         border-radius: 5px;
-        text-align: center;
-        font-size: 16px;
-        font-weight: bold;
+        font-size: 14px;
+        margin: 2px;
+        display: inline-block;
       }
       .button:hover {
         background-color: #0056b3;
+      }
+      .delete-button {
+        background-color: #dc3545;
+      }
+      .delete-button:hover {
+        background-color: #a71d2a;
       }
     </style>
   </head>
@@ -66,6 +72,7 @@
           <th>Title</th>
           <th>Price</th>
           <th>Author</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -75,6 +82,15 @@
           <td>{{ book.title }}</td>
           <td>{{ book.price }}</td>
           <td>{{ book.author.name }}</td>
+          <td>
+            <a href="{% url 'edit_book' book.id %}" class="button">Edit</a>
+            <a
+              href="{% url 'delete_book' book.id %}"
+              class="button delete-button"
+              onclick="return confirm('Are you sure?');"
+              >Delete</a
+            >
+          </td>
         </tr>
         {% endfor %}
       </tbody>
