@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    AuthorListCreateAPIView,AuthorDetailAPIView,BookListCreateAPIView,BookDetailAPIView,CategoryListCreateAPIView,CategoryDetailAPIView,PublisherListCreateAPIView,PublisherDetailAPIView)
+    AuthorListCreateAPIView,AuthorDetailAPIView,BookListCreateAPIView,BookDetailAPIView,CategoryListCreateAPIView,CategoryDetailAPIView,PublisherListCreateAPIView,PublisherDetailAPIView, CustomerDetailAPIView,CustomerListCreateAPIView)
 
 urlpatterns = [
     path('authors/', AuthorListCreateAPIView.as_view(), name='author-list'),
@@ -14,4 +14,7 @@ urlpatterns = [
 
     path('publisher/', PublisherListCreateAPIView.as_view(), name='Publisher-list'),
     path('publisher/<int:pk>/', PublisherDetailAPIView.as_view(), name='Publisher-detail'),
+
+    path('customer/', CustomerListCreateAPIView.as_view(), name='customer-list'),
+    path('customer/<int:pk>/', CustomerDetailAPIView.as_view(), name='customer-detail'),
 ]

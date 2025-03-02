@@ -7,7 +7,7 @@ from .models import Author, Category, Publisher, Book, Customer, Employee, User,
 from .serializers import (
     AuthorSerializer,CategorySerializer,PublisherSerializer,BookSerializer,CustomerSerializer,EmployeeSerializer,UserSerializer,InventorySerializer,OrderDetailSerializer,OrderItemSerializer
 )
-
+# 1 Authors APIView
 class AuthorListCreateAPIView(APIView):
     def get(self,request):
         authors=Author.objects.all()
@@ -52,6 +52,7 @@ class AuthorDetailAPIView(APIView):
         author.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# 2 Books APIView
 class BookListCreateAPIView(APIView):
     def get(self,request):
         books=Book.objects.all()
@@ -96,6 +97,7 @@ class BookDetailAPIView(APIView):
         book.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+# 3 Category APIView
 class CategoryListCreateAPIView(APIView):
     def get(self, request):
         categories = Category.objects.all()
@@ -131,7 +133,7 @@ class CategoryDetailAPIView(APIView):
         category.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# Publisher API Views
+# 4 Publisher API Views
 class PublisherListCreateAPIView(APIView):
     def get(self, request):
         publishers = Publisher.objects.all()
@@ -166,3 +168,43 @@ class PublisherDetailAPIView(APIView):
         publisher = self.get_object(pk)
         publisher.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+# 5 Customer APIView
+class CustomerListCreateAPIView(APIView):
+    def get(self, request):
+        customers = Customer.objects.all()
+        serializer = CustomerSerializer(customers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = CustomerSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CustomerDetailAPIView(APIView):
+    def get_object(self, pk):
+        return get_object_or_404(Customer, pk=pk)
+
+    def get(self, request, pk):
+        customer = self.get_object(pk)
+        serializer = CustomerSerializer(customer)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        customer = self.get_object(pk)
+        serializer = CustomerSerializer(customer, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        customer = self.get_object(pk)
+        customer.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
