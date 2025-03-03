@@ -1,6 +1,14 @@
 from django.urls import path
-from .views import (
-    AuthorListCreateAPIView,AuthorDetailAPIView,BookListCreateAPIView,BookDetailAPIView,CategoryListCreateAPIView,CategoryDetailAPIView,PublisherListCreateAPIView,PublisherDetailAPIView, CustomerDetailAPIView,CustomerListCreateAPIView,EmployeeDetailAPIView,EmployeeListCreateAPIView,OrderDetailDetailAPIView,OrderDetailListCreateAPIView,OrderItemDetailAPIView,OrderItemListCreateAPIView, UserListCreateAPIView,UserDetailAPIView, InventoryDetailAPIView,InventoryListCreateAPIView)
+from .views.author_views import AuthorListCreateAPIView, AuthorDetailAPIView
+from .views.book_views import BookListCreateAPIView,BookDetailAPIView
+from .views.category_views import CategoryListCreateAPIView,CategoryDetailAPIView
+from .views.publisher_views import PublisherDetailAPIView,PublisherListCreateAPIView
+from .views.customer_views import CustomerListCreateAPIView,CustomerDetailAPIView
+from .views.employee_views import EmployeeDetailAPIView,EmployeeListCreateAPIView
+from .views.orderdetail_views import OrderDetailDetailAPIView,OrderDetailListCreateAPIView
+from .views.user_views import UserDetailAPIView,UserListCreateAPIView
+from .views.invertory_views import InventoryDetailAPIView,InventoryListCreateAPIView
+from .views.orderitem_views import OrderItemDetailAPIView,OrderItemListCreateAPIView
 
 urlpatterns = [
     path('authors/', AuthorListCreateAPIView.as_view(), name='author-list'),
