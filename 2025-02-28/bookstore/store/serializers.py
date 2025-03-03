@@ -1,10 +1,19 @@
 from rest_framework import serializers
 from .models import Author,Category,Publisher,Book,Customer,Employee,User,Inventory,OrderDetail,OrderItem
 
-class AuthorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Author
-        fields='__all__'
+class AuthorSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=50)
+    genre = serializers.CharField(max_length=50, allow_blank=True, required=False)
+
+    def create(self, validated_data):
+        return Author.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.genre = validated_data.get('genre', instance.genre)
+        instance.save()
+        return instance
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
