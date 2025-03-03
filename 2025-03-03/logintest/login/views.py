@@ -6,8 +6,10 @@ from rest_framework.views import APIView
 from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 
 class StudentAPI(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         queryset = Student.objects.all()
         serializer = StudentSerializer(queryset, many=True)
