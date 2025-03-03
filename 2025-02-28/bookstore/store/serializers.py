@@ -139,13 +139,36 @@ class InventorySerializer(serializers.Serializer):
         return instance
 
 
-class OrderDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OrderDetail
-        fields = '__all__'
+class OrderDetailSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    customer = serializers.PrimaryKeyRelatedField(queryset=Customer.objects.all())
+    order_date = serializers.DateTimeField(read_only=True)  # Auto-generated on creation
+    total_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+    def create(self, validated_data):
+        return OrderDetail.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.customer = validated_data.get('customer', instance.customer)
+        instance.total_amount = validated_data.get('total_amount', instance.total_amount)
+        instance.save()
+        return instance
 
 
-class OrderItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OrderItem
-        fields = '__all__'
+class OrderItemSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    order = serializers.PrimaryKeyRelatedField(queryset=OrderDetail.objects.all())
+    book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
+    quantity = serializers.IntegerField()
+    subtotal = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+    def create(self, validated_data):
+        return OrderItem.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.order = validated_data.get('order', instance.order)
+        instance.book = validated_data.get('book', instance.book)
+        instance.quantity = validated_data.get('quantity', instance.quantity)
+        instance.subtotal = validated_data.get('subtotal', instance.subtotal)
+        instance.save()
+        return instance
