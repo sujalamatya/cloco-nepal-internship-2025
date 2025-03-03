@@ -41,22 +41,64 @@ class PublisherSerializer(serializers.Serializer):
         instance.save()
         return instance
 
-class BookSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Book
-        fields = '__all__'
+class BookSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    title = serializers.CharField(max_length=50)
+    stock_quantity = serializers.IntegerField()
+    price = serializers.DecimalField(max_digits=10, decimal_places=2)
+    author = serializers.PrimaryKeyRelatedField(queryset=Author.objects.all())
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), allow_null=True, required=False)
+    publisher = serializers.PrimaryKeyRelatedField(queryset=Publisher.objects.all(), allow_null=True, required=False)
+    
+    def create(self, validated_data):
+        return Book.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.stock_quantity = validated_data.get('stock_quantity', instance.stock_quantity)
+        instance.price = validated_data.get('price', instance.price)
+        instance.author = validated_data.get('author', instance.author)
+        instance.category = validated_data.get('category', instance.category)
+        instance.publisher = validated_data.get('publisher', instance.publisher)
+        instance.save()
+        return instance
 
 
-class CustomerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Customer
-        fields = '__all__'
+class CustomerSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=50)
+    email = serializers.EmailField()
+    phone = serializers.CharField(max_length=20)
+
+    def create(self, validated_data):
+        return Customer.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.save()
+        return instance
 
 
-class EmployeeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Employee
-        fields = '__all__'
+
+class EmployeeSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=50)
+    role = serializers.ChoiceField(choices=[('Manager', 'Manager'), ('Cashier', 'Cashier'), ('Stock Manager', 'Stock Manager')])
+    salary = serializers.DecimalField(max_digits=10, decimal_places=2)
+    hire_date = serializers.DateField()
+
+    def create(self, validated_data):
+        return Employee.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.role = validated_data.get('role', instance.role)
+        instance.salary = validated_data.get('salary', instance.salary)
+        instance.hire_date = validated_data.get('hire_date', instance.hire_date)
+        instance.save()
+        return instance
 
 
 class UserSerializer(serializers.ModelSerializer):
