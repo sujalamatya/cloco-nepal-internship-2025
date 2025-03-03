@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth.hashers import make_password
 from .models import Author,Category,Publisher,Book,Customer,Employee,User,Inventory,OrderDetail,OrderItem
 
 class AuthorSerializer(serializers.Serializer):
@@ -101,16 +102,41 @@ class EmployeeSerializer(serializers.Serializer):
         return instance
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'
+class UserSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    username = serializers.CharField(max_length=50)
+    password = serializers.CharField(write_only=True)  # Hide password in api response
+    role = serializers.ChoiceField(choices=[('admin', 'Admin'), ('customer', 'Customer'), ('employee', 'Employee')])
+    employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), allow_null=True, required=False)
+    customer = serializers.PrimaryKeyRelatedField(queryset=Customer.objects.all(), allow_null=True, required=False)
 
+    def create(self, validated_data):
+        validated_data['password'] = make_password(validated_data['password'])  # Hash password before saving
+        return User.objects.create(**validated_data)
 
-class InventorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Inventory
-        fields = '__all__'
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+        if 'password' in validated_data:
+            instance.password = make_password(validated_data['password'])  # Hash new password before updating
+        instance.role = validated_data.get('role', instance.role)
+        instance.employee = validated_data.get('employee', instance.employee)
+        instance.customer = validated_data.get('customer', instance.customer)
+        instance.save()
+        return instance
+
+class InventorySerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
+    stock_quantity = serializers.IntegerField()
+
+    def create(self, validated_data):
+        return Inventory.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.book = validated_data.get('book', instance.book)
+        instance.stock_quantity = validated_data.get('stock_quantity', instance.stock_quantity)
+        instance.save()
+        return instance
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
