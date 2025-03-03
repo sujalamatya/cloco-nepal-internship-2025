@@ -27,11 +27,19 @@ class CategorySerializer(serializers.Serializer):
         instance.save()
         return instance
 
-class PublisherSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Publisher
-        fields = '__all__'
+class PublisherSerializer(serializers.Serializer):
+    id=serializers.IntegerField(read_only=True)
+    name=serializers.CharField(max_length=50)
+    contact_info=serializers.CharField(max_length=50,allow_blank=True, required=False)
 
+    def create(self, validated_data):
+        return Publisher.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.contact_info = validated_data.get('contact_info', instance.contact_info)
+        instance.save()
+        return instance
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
