@@ -8,14 +8,16 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import filters
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListCreateAPIView
 
-class StudentAPI(ListAPIView):  
+class StudentAPI(ListCreateAPIView):  
     # permission_classes = [IsAuthenticated]
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']  
+    ordering_fields = ['name', 'age']  
+    ordering = ['name']  # Default ordering 
 
 class LoginAPI(APIView):
     def post(self, request):
