@@ -7,16 +7,15 @@ from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import filters
+from rest_framework.generics import ListAPIView
 
-class StudentAPI(APIView):
-    permission_classes = [IsAuthenticated]
-    def get(self, request):
-        queryset = Student.objects.all()
-        serializer = StudentSerializer(queryset, many=True)
-        return Response({
-            "status": True,
-            "data": serializer.data
-        }, status=status.HTTP_200_OK)
+class StudentAPI(ListAPIView):  
+    # permission_classes = [IsAuthenticated]
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']  
 
 class LoginAPI(APIView):
     def post(self, request):
@@ -34,10 +33,10 @@ class LoginAPI(APIView):
         
         user_obj = authenticate(username=username, password=password)
         if user_obj:
-            token,_= Token.objects.get_or_create(user=user_obj)
+            token, _ = Token.objects.get_or_create(user=user_obj)
             return Response({
                 "status": True,
-                "data": {"token":str(token)}  # You need to implement token generation
+                "data": {"token": str(token)}  
             }, status=status.HTTP_200_OK)
 
         return Response({
