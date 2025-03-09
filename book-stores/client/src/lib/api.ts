@@ -22,6 +22,12 @@ export interface Book {
   price: string;
   author: string; // Assuming this is an author ID
 }
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+}
 // 🔹 Books API
 export const getBooks = () => fetchAPI("books/");
 export const getBook = (id: string) => fetchAPI(`books/${id}/`);
