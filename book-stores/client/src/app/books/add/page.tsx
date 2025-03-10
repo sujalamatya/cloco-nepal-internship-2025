@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { addBook, getAuthors } from "@/lib/api";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { bookSchema } from "@/lib/validationSchemas/bookSchema"; // import the Zod schema
 
 interface Book {
   name: string;
@@ -25,7 +27,9 @@ export default function AddBook() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Book>();
+  } = useForm<Book>({
+    resolver: zodResolver(bookSchema), // Use Zod for validation
+  });
 
   useEffect(() => {
     async function fetchAuthors() {
@@ -65,10 +69,7 @@ export default function AddBook() {
           >
             <div>
               <Label htmlFor="name">Book Name</Label>
-              <Input
-                id="name"
-                {...register("name", { required: "Book name is required" })}
-              />
+              <Input id="name" {...register("name")} />
               {errors.name && (
                 <p className="text-red-500 text-sm">{errors.name.message}</p>
               )}
@@ -78,7 +79,7 @@ export default function AddBook() {
               <Label htmlFor="author">Author</Label>
               <select
                 id="author"
-                {...register("author", { required: "Author is required" })}
+                {...register("author")}
                 className="border rounded px-2 py-1 w-full"
               >
                 <option value="">Select an author</option>
@@ -95,11 +96,7 @@ export default function AddBook() {
 
             <div>
               <Label htmlFor="price">Price (Rs.)</Label>
-              <Input
-                id="price"
-                type="number"
-                {...register("price", { required: "Price is required" })}
-              />
+              <Input id="price" type="number" {...register("price")} />
               {errors.price && (
                 <p className="text-red-500 text-sm">{errors.price.message}</p>
               )}
@@ -110,9 +107,7 @@ export default function AddBook() {
               <Input
                 id="stock_quantity"
                 type="number"
-                {...register("stock_quantity", {
-                  required: "Stock quantity is required",
-                })}
+                {...register("stock_quantity")}
               />
               {errors.stock_quantity && (
                 <p className="text-red-500 text-sm">
@@ -123,10 +118,7 @@ export default function AddBook() {
 
             <div>
               <Label htmlFor="category">Category</Label>
-              <Input
-                id="category"
-                {...register("category", { required: "Category is required" })}
-              />
+              <Input id="category" {...register("category")} />
               {errors.category && (
                 <p className="text-red-500 text-sm">
                   {errors.category.message}
@@ -136,12 +128,7 @@ export default function AddBook() {
 
             <div>
               <Label htmlFor="publisher">Publisher</Label>
-              <Input
-                id="publisher"
-                {...register("publisher", {
-                  required: "Publisher is required",
-                })}
-              />
+              <Input id="publisher" {...register("publisher")} />
               {errors.publisher && (
                 <p className="text-red-500 text-sm">
                   {errors.publisher.message}

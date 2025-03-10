@@ -1,8 +1,4 @@
 "use client";
-import * as React from "react";
-import { usePathname } from "next/navigation"; // Import usePathname from next/navigation
-import { SearchForm } from "@/components/search-form";
-import { VersionSwitcher } from "@/components/version-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -15,8 +11,9 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { usePathname } from "next/navigation"; // Import usePathname from next/navigation
+import * as React from "react";
 
-// This is sample data.
 const data = {
   navMain: [
     {
