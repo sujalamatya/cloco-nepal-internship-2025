@@ -65,7 +65,7 @@ export default function CustomersTable() {
               <TableCell className="text-right space-x-2">
                 <Button
                   className="bg-blue-500 hover:bg-blue-700 text-white"
-                  onClick={() => router.push(`/customers/edit/${customer.id}`)}
+                  onClick={() => router.push(`/customers/${customer.id}`)}
                 >
                   Edit
                 </Button>

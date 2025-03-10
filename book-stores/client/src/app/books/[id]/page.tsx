@@ -1,4 +1,5 @@
 "use client";
+
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { updateBook, getBook } from "@/lib/api"; // Import API functions
+import { updateBook, getBook, getAuthors } from "@/lib/api"; // Import API functions
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Define the Book type
 interface Book {
@@ -29,14 +37,16 @@ export default function EditBook({ params }: EditBookProps) {
   const router = useRouter();
   const { id } = params;
   const [book, setBook] = useState<Book | null>(null);
+  const [authors, setAuthors] = useState<{ id: string; name: string }[]>([]);
   const {
     register,
     handleSubmit,
+    setValue,
     reset,
     formState: { errors },
   } = useForm<Book>();
 
-  // Fetch book data when the component mounts
+  // Fetch book and authors data when the component mounts
   useEffect(() => {
     if (id) {
       getBook(id)
@@ -46,6 +56,10 @@ export default function EditBook({ params }: EditBookProps) {
         })
         .catch((error) => console.error("Error fetching book details:", error));
     }
+
+    getAuthors()
+      .then(setAuthors)
+      .catch((error) => console.error("Error fetching authors:", error));
   }, [id, reset]);
 
   const onSubmit = async (data: Book) => {
@@ -88,10 +102,21 @@ export default function EditBook({ params }: EditBookProps) {
 
             <div>
               <Label htmlFor="author">Author</Label>
-              <Input
-                id="author"
-                {...register("author", { required: "Author is required" })}
-              />
+              <Select
+                onValueChange={(value) => setValue("author", value)}
+                defaultValue={book.author}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select an author" />
+                </SelectTrigger>
+                <SelectContent>
+                  {authors.map((author) => (
+                    <SelectItem key={author.id} value={author.name}>
+                      {author.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {errors.author && (
                 <p className="text-red-500 text-sm">{errors.author.message}</p>
               )}

@@ -25,38 +25,87 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 // Import the API functions
-import { getBooks, deleteBook } from "@/lib/api"; // Adjust the import path if needed
-
-// Define the Book type based on Django API
+import {
+  getBooks,
+  getAuthors,
+  getCategories,
+  getPublishers,
+  deleteBook,
+} from "@/lib/api";
 interface Book {
   id: string;
   title: string;
   stock_quantity: number;
   price: string;
   author: string;
-  category?: string;
-  publisher?: string;
+  category: string;
+  publisher: string;
+}
+
+interface Author {
+  id: string;
+  name: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+}
+
+interface Publisher {
+  id: string;
+  name: string;
 }
 
 export default function Home() {
   const [books, setBooks] = useState<Book[]>([]);
+  const [authors, setAuthors] = useState<Author[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [publishers, setPublishers] = useState<Publisher[]>([]);
   const router = useRouter();
   const [totalBooks, setTotalBooks] = useState("0");
 
-  // Fetch books from Django API
+  // Fetch books, authors, categories, and publishers from API
   useEffect(() => {
-    fetchBooks();
+    fetchData();
   }, []);
 
-  async function fetchBooks() {
+  async function fetchData() {
     try {
-      const data = await getBooks();
-      setBooks(data);
-      console.log(data);
-      setTotalBooks(data.length.toString());
+      const booksData = await getBooks();
+      const authorsData = await getAuthors();
+      const categoriesData = await getCategories();
+      const publishersData = await getPublishers();
+
+      setBooks(booksData);
+      setAuthors(authorsData);
+      setCategories(categoriesData);
+      setPublishers(publishersData);
+
+      setTotalBooks(booksData.length.toString());
     } catch (error) {
-      console.error("Error fetching books:", error);
+      console.error("Error fetching data:", error);
     }
+  }
+
+  // Get the name of an author by ID
+  function getAuthorName(authorId: string): string {
+    const author = authors.find((author) => author.id === authorId);
+    return author ? author.name : "Unknown";
+  }
+
+  // Get the name of a category by ID
+  function getCategoryName(categoryId: string): string {
+    const category = categories.find((category) => category.id === categoryId);
+    return category ? category.name : "Unknown";
+  }
+
+  // Get the name of a publisher by ID
+  function getPublisherName(publisherId: string): string {
+    const publisher = publishers.find(
+      (publisher) => publisher.id === publisherId
+    );
+    return publisher ? publisher.name : "Unknown";
   }
 
   // Delete a book
@@ -100,27 +149,27 @@ export default function Home() {
             <TableRow key={book.id}>
               <TableCell className="font-medium">{book.id}</TableCell>
               <TableCell>{book.title}</TableCell>
-              <TableCell>{book.author}</TableCell>
+              <TableCell>{getAuthorName(book.author)}</TableCell>
               <TableCell>{book.stock_quantity}</TableCell>
-              <TableCell>{book.category || "N/A"}</TableCell>
-              <TableCell>{book.publisher || "N/A"}</TableCell>
+              <TableCell>{getCategoryName(book.category)}</TableCell>
+              <TableCell>{getPublisherName(book.publisher)}</TableCell>
               <TableCell className="text-right">Rs. {book.price}</TableCell>
               <TableCell>
                 <div className="flex space-x-3">
                   {/* Edit Button */}
-                  <button
+                  <Button
                     onClick={() => router.push(`/books/${book.id}`)}
-                    className="text-blue-500 hover:text-blue-700"
+                    className="bg-blue-500 hover:bg-blue-700 text-white"
                   >
-                    ✏️
-                  </button>
+                    edit
+                  </Button>
 
                   {/* Delete Button with Confirmation Dialog */}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <button className="text-red-500 hover:text-red-700">
-                        🗑️
-                      </button>
+                      <Button className="bg-red-500 hover:bg-red-700 text-white">
+                        delete
+                      </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
@@ -154,7 +203,7 @@ export default function Home() {
           className="bg-green-500 text-white hover:bg-green-700"
           onClick={() => router.push("/books/add")}
         >
-          ➕ Add Book
+          Add Book
         </Button>
       </div>
     </>

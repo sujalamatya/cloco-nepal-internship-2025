@@ -1,14 +1,14 @@
-"use client"; // This tells Next.js that this component should be rendered on the client-side
+"use client";
 
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { addBook } from "@/lib/api"; // Import addBook function from utils
+import { addBook, getAuthors } from "@/lib/api";
 
-// Define the Book type
 interface Book {
   name: string;
   author: string;
@@ -20,19 +20,30 @@ interface Book {
 
 export default function AddBook() {
   const router = useRouter();
+  const [authors, setAuthors] = useState<{ id: string; name: string }[]>([]);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Book>();
 
-  // Handle form submission (add new book)
+  useEffect(() => {
+    async function fetchAuthors() {
+      try {
+        const authorsList = await getAuthors();
+        setAuthors(authorsList);
+      } catch (error) {
+        console.error("Error fetching authors:", error);
+      }
+    }
+    fetchAuthors();
+  }, []);
+
   const onSubmit = async (data: Book) => {
     try {
-      const response = await addBook(data); // Use the addBook function
-
+      const response = await addBook(data);
       if (response) {
-        router.push("/books"); // Redirect after success
+        router.push("/books");
       } else {
         console.error("Error adding book.");
       }
@@ -52,7 +63,6 @@ export default function AddBook() {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
           >
-            {/* Name Input */}
             <div>
               <Label htmlFor="name">Book Name</Label>
               <Input
@@ -64,19 +74,25 @@ export default function AddBook() {
               )}
             </div>
 
-            {/* Author Input */}
             <div>
               <Label htmlFor="author">Author</Label>
-              <Input
+              <select
                 id="author"
                 {...register("author", { required: "Author is required" })}
-              />
+                className="border rounded px-2 py-1 w-full"
+              >
+                <option value="">Select an author</option>
+                {authors.map((author) => (
+                  <option key={author.id} value={author.id}>
+                    {author.name}
+                  </option>
+                ))}
+              </select>
               {errors.author && (
                 <p className="text-red-500 text-sm">{errors.author.message}</p>
               )}
             </div>
 
-            {/* Price Input */}
             <div>
               <Label htmlFor="price">Price (Rs.)</Label>
               <Input
@@ -89,7 +105,6 @@ export default function AddBook() {
               )}
             </div>
 
-            {/* Stock Quantity */}
             <div>
               <Label htmlFor="stock_quantity">Stock Quantity</Label>
               <Input
@@ -106,7 +121,6 @@ export default function AddBook() {
               )}
             </div>
 
-            {/* Category */}
             <div>
               <Label htmlFor="category">Category</Label>
               <Input
@@ -120,7 +134,6 @@ export default function AddBook() {
               )}
             </div>
 
-            {/* Publisher */}
             <div>
               <Label htmlFor="publisher">Publisher</Label>
               <Input
@@ -136,7 +149,6 @@ export default function AddBook() {
               )}
             </div>
 
-            {/* Submit Button */}
             <Button type="submit" className="w-full">
               Add Book
             </Button>

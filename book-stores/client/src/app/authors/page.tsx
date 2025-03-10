@@ -1,6 +1,7 @@
 // Authors Table page can view and add authors
 "use client";
 import { AppSidebar } from "@/components/app-sidebar";
+import AuthorTable from "@/components/AuthorTable";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,22 +10,13 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Component as BarChartCard } from "@/components/BarChartCard";
-import AuthorTable from "@/components/AuthorTable";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 export default function Page() {
   return (
     <SidebarProvider>
