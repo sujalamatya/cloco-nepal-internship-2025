@@ -1,5 +1,6 @@
+"use client";
 import * as React from "react";
-
+import { usePathname } from "next/navigation"; // Import usePathname from next/navigation
 import { SearchForm } from "@/components/search-form";
 import { VersionSwitcher } from "@/components/version-switcher";
 import {
@@ -17,7 +18,6 @@ import {
 
 // This is sample data.
 const data = {
-  // versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
   navMain: [
     {
       title: "Dashboard",
@@ -26,12 +26,10 @@ const data = {
         {
           title: "Home",
           url: "/dashboard",
-          isActive: true,
         },
         {
           title: "Books",
           url: "/books",
-          isActive: false,
         },
         {
           title: "Authors",
@@ -75,29 +73,31 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname(); // Get the current pathname
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        {/* <VersionSwitcher
-          versions={data.versions}
-          defaultVersion={data.versions[0]}
-        /> */}
-        {/* <SearchForm /> */}
+        {/* Add any other components you might need */}
       </SidebarHeader>
       <SidebarContent>
-        {/* We create a SidebarGroup for each parent. */}
         {data.navMain.map((item) => (
           <SidebarGroup key={item.title} className="m-5">
             <SidebarGroupLabel className="mb-9">{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {item.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.url}>{item.title}</a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {item.items.map((menuItem) => {
+                  // Determine if the current route matches the menu item's URL
+                  const isActive = pathname === menuItem.url;
+
+                  return (
+                    <SidebarMenuItem key={menuItem.title}>
+                      <SidebarMenuButton asChild isActive={isActive}>
+                        <a href={menuItem.url}>{menuItem.title}</a>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
