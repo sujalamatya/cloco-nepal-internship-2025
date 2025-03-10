@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Book, Author, Category, Publisher } from "@/types/types";
 
 // Import the API functions
 import {
@@ -32,32 +33,6 @@ import {
   getPublishers,
   deleteBook,
 } from "@/lib/api";
-
-// Define the types for Book, Author, Category, and Publisher
-interface Book {
-  id: string;
-  title: string;
-  stock_quantity: number;
-  price: string;
-  author: string;
-  category: string;
-  publisher: string;
-}
-
-interface Author {
-  id: string;
-  name: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
-}
-
-interface Publisher {
-  id: string;
-  name: string;
-}
 
 export default function Home() {
   const [books, setBooks] = useState<Book[]>([]);

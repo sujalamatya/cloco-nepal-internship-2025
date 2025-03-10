@@ -1,7 +1,7 @@
 // Books Table page can add,edit,delete (CRUD) operations
 "use client";
 import { AppSidebar } from "@/components/app-sidebar";
-import TableComp from "@/components/TableComp";
+import TableComp from "@/components/books-table";
 import {
   Breadcrumb,
   BreadcrumbItem,

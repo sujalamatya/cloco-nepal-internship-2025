@@ -48,7 +48,7 @@ export default function CategoryTable() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold text-center my-4">Authors List</h1>
+      <h1 className="text-2xl font-bold text-center my-4">Categories</h1>
 
       <Table>
         <TableCaption>List of authors</TableCaption>
