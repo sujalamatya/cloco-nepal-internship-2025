@@ -3,85 +3,168 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect, useState } from "react";
-// import { NumberTicker } from "./magicui/number-ticker";
 
-// Define the Book type
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+// Import the API functions
+import {
+  getBooks,
+  getAuthors,
+  getCategories,
+  getPublishers,
+  deleteBook,
+} from "@/lib/api";
 interface Book {
   id: string;
-  name: string;
-  author: string;
+  title: string;
+  stock_quantity: number;
   price: string;
+  author: string;
+  category: string;
+  publisher: string;
+}
+
+interface Author {
+  id: string;
+  name: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+}
+
+interface Publisher {
+  id: string;
+  name: string;
 }
 
 export default function Home() {
   const [books, setBooks] = useState<Book[]>([]);
+  const [authors, setAuthors] = useState<Author[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [publishers, setPublishers] = useState<Publisher[]>([]);
+  const router = useRouter();
   const [totalBooks, setTotalBooks] = useState("0");
-  const [showAll, setShowAll] = useState(false);
 
+  // Fetch books, authors, categories, and publishers from API
   useEffect(() => {
-    async function fetchBooks() {
-      try {
-        const response = await fetch("http://localhost:4000/books");
-        const data: Book[] = await response.json();
-        setBooks(data);
-        setTotalBooks(data.length > 0 ? data[data.length - 1].id : "0");
-      } catch (error) {
-        console.error("Error fetching books:", error);
-      }
-    }
-    fetchBooks();
+    fetchData();
   }, []);
+
+  async function fetchData() {
+    try {
+      const booksData = await getBooks();
+      const authorsData = await getAuthors();
+      const categoriesData = await getCategories();
+      const publishersData = await getPublishers();
+
+      setBooks(booksData);
+      setAuthors(authorsData);
+      setCategories(categoriesData);
+      setPublishers(publishersData);
+
+      setTotalBooks(booksData.length.toString());
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  // Get the name of an author by ID
+  function getAuthorName(authorId: string): string {
+    const author = authors.find((author) => author.id === authorId);
+    return author ? author.name : "Unknown";
+  }
+
+  // Get the name of a category by ID
+  function getCategoryName(categoryId: string): string {
+    const category = categories.find((category) => category.id === categoryId);
+    return category ? category.name : "Unknown";
+  }
+
+  // Get the name of a publisher by ID
+  function getPublisherName(publisherId: string): string {
+    const publisher = publishers.find(
+      (publisher) => publisher.id === publisherId
+    );
+    return publisher ? publisher.name : "Unknown";
+  }
+
+  // Delete a book
+  async function handleDeleteBook(bookId: string) {
+    try {
+      const response = await deleteBook(bookId);
+
+      if (response) {
+        setBooks(books.filter((book) => book.id !== bookId));
+        setTotalBooks((books.length - 1).toString());
+      }
+    } catch (error) {
+      console.error("Error deleting book:", error);
+    }
+  }
 
   return (
     <>
-      <h1 className="flex justify-center font-bold text-4xl">
+      {/* Header */}
+      <h1 className="flex justify-center font-bold text-2xl my-4">
         Total Books: {totalBooks}
       </h1>
+
+      {/* Table to Show Books */}
       <Table>
-        <TableCaption>List of books.</TableCaption>
+        <TableCaption>List of books available in the store.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">ID</TableHead>
-            <TableHead>Name</TableHead>
+            <TableHead>Title</TableHead>
             <TableHead>Author</TableHead>
+            <TableHead>Stock</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Publisher</TableHead>
             <TableHead className="text-right">Price</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {(showAll ? books : books.slice(0, 5)).map((book) => (
+          {books.map((book) => (
             <TableRow key={book.id}>
-              <TableCell className="font-medium">{book.id}</TableCell>
-              <TableCell>{book.name}</TableCell>
-              <TableCell>{book.author}</TableCell>
-              <TableCell className="text-right">{book.price}</TableCell>
+              <TableCell>{book.title}</TableCell>
+              <TableCell>{getAuthorName(book.author)}</TableCell>
+              <TableCell>{book.stock_quantity}</TableCell>
+              <TableCell>{getCategoryName(book.category)}</TableCell>
+              <TableCell>{getPublisherName(book.publisher)}</TableCell>
+              <TableCell className="text-right">Rs. {book.price}</TableCell>
             </TableRow>
           ))}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={4} className="font-medium text-center">
-              Showing {showAll ? books.length : Math.min(5, books.length)} of{" "}
-              {books.length} books
-            </TableCell>
-          </TableRow>
-        </TableFooter>
       </Table>
-      {!showAll && books.length > 5 && (
-        <div className="flex justify-center mt-4">
-          <button
-            className="px-4 py-2 bg-blue-500 text-white hover:bg-blue-700 rounded-2xl"
-            onClick={() => setShowAll(true)}
-          >
-            Show More
-          </button>
-        </div>
-      )}
+
+      {/* Add Book Button */}
+      <div className="flex justify-center my-6">
+        <Button
+          className="bg-green-500 text-white hover:bg-green-700"
+          onClick={() => router.push("/books")}
+        >
+          view more
+        </Button>
+      </div>
     </>
   );
 }
