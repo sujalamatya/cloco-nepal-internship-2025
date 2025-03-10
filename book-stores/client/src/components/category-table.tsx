@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getAuthors, deleteAuthor } from "@/lib/api"; // Import API functions
-import { Author } from "@/types/types";
+import { getCategories, deleteCategory } from "@/lib/api"; // Import API functions
+import { Category } from "@/types/types";
 import {
   Table,
   TableBody,
@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 export default function CategoryTable() {
-  const [authors, setAuthors] = useState<Author[]>([]);
+  const [category, setCategories] = useState<Category[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -25,23 +25,23 @@ export default function CategoryTable() {
 
   async function fetchCategory() {
     try {
-      const data = await getAuthors();
-      setAuthors(data);
+      const data = await getCategories();
+      setCategories(data);
     } catch (error) {
-      console.error("Error fetching authors:", error);
+      console.error("Error fetching categories:", error);
     }
   }
 
   async function handleDelete(id: string) {
-    if (confirm("Are you sure you want to delete this author?")) {
+    if (confirm("Are you sure you want to delete this Category?")) {
       try {
-        await deleteAuthor(id);
+        await deleteCategory(id);
 
-        setAuthors((prevAuthors) =>
-          prevAuthors.filter((author) => author.id !== id)
+        setCategories((prevCategorie) =>
+          prevCategorie.filter((category) => category.id !== id)
         );
       } catch (error) {
-        console.error("Error deleting author:", error);
+        console.error("Error deleting category:", error);
       }
     }
   }
@@ -51,7 +51,7 @@ export default function CategoryTable() {
       <h1 className="text-2xl font-bold text-center my-4">Categories</h1>
 
       <Table>
-        <TableCaption>List of authors</TableCaption>
+        <TableCaption>List of category</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
@@ -59,19 +59,19 @@ export default function CategoryTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {authors.map((author) => (
-            <TableRow key={author.id}>
-              <TableCell>{author.name}</TableCell>
+          {category.map((category) => (
+            <TableRow key={category.id}>
+              <TableCell>{category.name}</TableCell>
               <TableCell className="text-right space-x-2">
                 <Button
                   className="bg-blue-500 hover:bg-blue-700 text-white"
-                  onClick={() => router.push(`/authors/${author.id}`)}
+                  onClick={() => router.push(`/category/${category.id}`)}
                 >
                   Edit
                 </Button>
                 <Button
                   className="bg-red-500 hover:bg-red-700 text-white"
-                  onClick={() => handleDelete(author.id)}
+                  onClick={() => handleDelete(category.id)}
                 >
                   Delete
                 </Button>
@@ -84,9 +84,9 @@ export default function CategoryTable() {
       <div className="flex justify-center my-4">
         <Button
           className="bg-green-500 hover:bg-green-700 text-white"
-          onClick={() => router.push("/authors/add")}
+          onClick={() => router.push("/category/add")}
         >
-          Add Author
+          Add category
         </Button>
       </div>
     </>

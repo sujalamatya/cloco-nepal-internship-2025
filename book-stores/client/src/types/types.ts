@@ -6,8 +6,6 @@ export interface Category {
   id: string;
   name: string;
 }
-
-// Book Interface
 export interface Book {
   id: string;
   title: string;
