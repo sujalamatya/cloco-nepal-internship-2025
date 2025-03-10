@@ -41,6 +41,34 @@ const data = {
           title: "Customers",
           url: "/customers",
         },
+        {
+          title: "Categories",
+          url: "/category",
+        },
+        {
+          title: "Publishers",
+          url: "/publishers",
+        },
+        {
+          title: "Employees",
+          url: "/employees",
+        },
+        {
+          title: "Users",
+          url: "/users",
+        },
+        {
+          title: "Inventory",
+          url: "/inventory",
+        },
+        {
+          title: "Order Item",
+          url: "/order-item",
+        },
+        {
+          title: "Order Details",
+          url: "/order-details",
+        },
       ],
     },
   ],
@@ -59,8 +87,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}
         {data.navMain.map((item) => (
-          <SidebarGroup key={item.title} className="">
-            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+          <SidebarGroup key={item.title} className="m-5">
+            <SidebarGroupLabel className="mb-9">{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {item.items.map((item) => (
