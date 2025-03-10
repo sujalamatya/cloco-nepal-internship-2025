@@ -51,7 +51,7 @@ export default function CategoryTable() {
       <h1 className="text-2xl font-bold text-center my-4">Categories</h1>
 
       <Table>
-        <TableCaption>List of category</TableCaption>
+        <TableCaption>Categories List </TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
