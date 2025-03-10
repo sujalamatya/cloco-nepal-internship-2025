@@ -32,6 +32,8 @@ import {
   getPublishers,
   deleteBook,
 } from "@/lib/api";
+
+// Define the types for Book, Author, Category, and Publisher
 interface Book {
   id: string;
   title: string;
@@ -62,15 +64,18 @@ export default function Home() {
   const [authors, setAuthors] = useState<Author[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [publishers, setPublishers] = useState<Publisher[]>([]);
-  const router = useRouter();
+  const [loading, setLoading] = useState(false); // To track if data is still loading
   const [totalBooks, setTotalBooks] = useState("0");
+  const router = useRouter();
 
-  // Fetch books, authors, categories, and publishers from API
   useEffect(() => {
     fetchData();
   }, []);
 
   async function fetchData() {
+    if (loading) return;
+
+    setLoading(true);
     try {
       const booksData = await getBooks();
       const authorsData = await getAuthors();
@@ -85,6 +90,8 @@ export default function Home() {
       setTotalBooks(booksData.length.toString());
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false); // Set loading state to false after fetching
     }
   }
 
@@ -115,7 +122,7 @@ export default function Home() {
 
       if (response) {
         setBooks(books.filter((book) => book.id !== bookId));
-        setTotalBooks((books.length - 1).toString());
+        setTotalBooks((prevTotal) => (parseInt(prevTotal) - 1).toString());
       }
     } catch (error) {
       console.error("Error deleting book:", error);
@@ -161,14 +168,14 @@ export default function Home() {
                     onClick={() => router.push(`/books/${book.id}`)}
                     className="bg-blue-500 hover:bg-blue-700 text-white"
                   >
-                    edit
+                    Edit
                   </Button>
 
                   {/* Delete Button with Confirmation Dialog */}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button className="bg-red-500 hover:bg-red-700 text-white">
-                        delete
+                        Delete
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
