@@ -1,7 +1,7 @@
 // Authors Table page can view and add authors
 "use client";
 import { AppSidebar } from "@/components/app-sidebar";
-import AuthorTable from "@/components/AuthorTable";
+import AuthorTable from "@/components/author-table";
 import {
   Breadcrumb,
   BreadcrumbItem,

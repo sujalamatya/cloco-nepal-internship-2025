@@ -9,24 +9,7 @@ const fetchAPI = async (endpoint: string, options = {}) => {
   if (!res.ok) throw new Error(`Error: ${res.statusText}`);
   return res.json();
 };
-export interface Author {
-  id: string;
-  name: string;
-}
 
-// Book Interface
-export interface Book {
-  id: string;
-  name: string;
-  price: string;
-  author: string;
-}
-export interface Customer {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-}
 // 🔹 Books API
 export const getBooks = () => fetchAPI("books/");
 export const getBook = (id: string) => fetchAPI(`books/${id}/`);

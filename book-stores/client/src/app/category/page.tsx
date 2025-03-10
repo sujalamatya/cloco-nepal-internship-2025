@@ -1,5 +1,10 @@
+import CategoryTable from "@/components/category-table";
 import React from "react";
 
 export default function category() {
-  return <div>category</div>;
+  return (
+    <div>
+      <CategoryTable />
+    </div>
+  );
 }

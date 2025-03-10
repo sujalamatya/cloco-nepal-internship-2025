@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getAuthors, deleteAuthor, Author } from "@/lib/api"; // Import API functions
+import { getAuthors, deleteAuthor } from "@/lib/api"; // Import API functions
+import { Author } from "@/types/types";
 import {
   Table,
   TableBody,
@@ -14,15 +15,15 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-export default function AuthorsTable() {
+export default function CategoryTable() {
   const [authors, setAuthors] = useState<Author[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    fetchAuthors();
+    fetchCategory();
   }, []);
 
-  async function fetchAuthors() {
+  async function fetchCategory() {
     try {
       const data = await getAuthors();
       setAuthors(data);
