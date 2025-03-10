@@ -7,7 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { updateBook, getBook, getAuthors } from "@/lib/api"; // Import API functions
+import {
+  updateBook,
+  getBook,
+  getAuthors,
+  getCategories,
+  getPublishers,
+} from "@/lib/api"; // Import API functions
 import {
   Select,
   SelectContent,
@@ -20,11 +26,11 @@ import {
 interface Book {
   id: string;
   title: string;
-  author: string;
+  author: string; // Foreign key ID for author
   price: string;
   stock_quantity: number;
-  category?: string;
-  publisher?: string;
+  category: string; // Foreign key ID for category
+  publisher: string; // Foreign key ID for publisher
 }
 
 interface EditBookProps {
@@ -38,6 +44,13 @@ export default function EditBook({ params }: EditBookProps) {
   const { id } = params;
   const [book, setBook] = useState<Book | null>(null);
   const [authors, setAuthors] = useState<{ id: string; name: string }[]>([]);
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>(
+    []
+  );
+  const [publishers, setPublishers] = useState<{ id: string; name: string }[]>(
+    []
+  );
+
   const {
     register,
     handleSubmit,
@@ -46,20 +59,25 @@ export default function EditBook({ params }: EditBookProps) {
     formState: { errors },
   } = useForm<Book>();
 
-  // Fetch book and authors data when the component mounts
+  // Fetch book and foreign key data when the component mounts
   useEffect(() => {
     if (id) {
       getBook(id)
         .then((data) => {
           setBook(data);
-          reset(data);
+          reset(data); // Reset form with the book data
         })
         .catch((error) => console.error("Error fetching book details:", error));
     }
 
-    getAuthors()
-      .then(setAuthors)
-      .catch((error) => console.error("Error fetching authors:", error));
+    // Fetch authors, categories, and publishers data
+    Promise.all([getAuthors(), getCategories(), getPublishers()])
+      .then(([authors, categories, publishers]) => {
+        setAuthors(authors);
+        setCategories(categories);
+        setPublishers(publishers);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
   }, [id, reset]);
 
   const onSubmit = async (data: Book) => {
@@ -89,6 +107,7 @@ export default function EditBook({ params }: EditBookProps) {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
           >
+            {/* Book Title */}
             <div>
               <Label htmlFor="title">Book Title</Label>
               <Input
@@ -100,6 +119,7 @@ export default function EditBook({ params }: EditBookProps) {
               )}
             </div>
 
+            {/* Author Dropdown */}
             <div>
               <Label htmlFor="author">Author</Label>
               <Select
@@ -111,7 +131,7 @@ export default function EditBook({ params }: EditBookProps) {
                 </SelectTrigger>
                 <SelectContent>
                   {authors.map((author) => (
-                    <SelectItem key={author.id} value={author.name}>
+                    <SelectItem key={author.id} value={author.id}>
                       {author.name}
                     </SelectItem>
                   ))}
@@ -122,6 +142,57 @@ export default function EditBook({ params }: EditBookProps) {
               )}
             </div>
 
+            {/* Category Dropdown */}
+            <div>
+              <Label htmlFor="category">Category</Label>
+              <Select
+                onValueChange={(value) => setValue("category", value)}
+                defaultValue={book.category}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.category && (
+                <p className="text-red-500 text-sm">
+                  {errors.category.message}
+                </p>
+              )}
+            </div>
+
+            {/* Publisher Dropdown */}
+            <div>
+              <Label htmlFor="publisher">Publisher</Label>
+              <Select
+                onValueChange={(value) => setValue("publisher", value)}
+                defaultValue={book.publisher}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a publisher" />
+                </SelectTrigger>
+                <SelectContent>
+                  {publishers.map((publisher) => (
+                    <SelectItem key={publisher.id} value={publisher.id}>
+                      {publisher.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.publisher && (
+                <p className="text-red-500 text-sm">
+                  {errors.publisher.message}
+                </p>
+              )}
+            </div>
+
+            {/* Price */}
             <div>
               <Label htmlFor="price">Price (Rs.)</Label>
               <Input
@@ -134,6 +205,7 @@ export default function EditBook({ params }: EditBookProps) {
               )}
             </div>
 
+            {/* Stock Quantity */}
             <div>
               <Label htmlFor="stock_quantity">Stock Quantity</Label>
               <Input
@@ -150,6 +222,7 @@ export default function EditBook({ params }: EditBookProps) {
               )}
             </div>
 
+            {/* Submit Button */}
             <Button type="submit" className="w-full">
               Update Book
             </Button>

@@ -1,6 +1,5 @@
-const API_BASE_URL = "http://127.0.0.1:8000/api"; // Update if needed
+const API_BASE_URL = "http://127.0.0.1:8000/api";
 
-// Generic Fetch Function
 const fetchAPI = async (endpoint: string, options = {}) => {
   const res = await fetch(`${API_BASE_URL}/${endpoint}`, {
     headers: { "Content-Type": "application/json" },
@@ -20,7 +19,7 @@ export interface Book {
   id: string;
   name: string;
   price: string;
-  author: string; // Assuming this is an author ID
+  author: string;
 }
 export interface Customer {
   id: string;
