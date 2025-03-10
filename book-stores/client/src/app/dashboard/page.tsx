@@ -9,7 +9,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
-// import { NumberTicker } from "@/components/magicui/number-ticker";
 import {
   SidebarInset,
   SidebarProvider,
@@ -39,25 +38,6 @@ interface Book {
 export default function Page() {
   const [books, setBooks] = useState<Book[]>([]);
   const [uniqueAuthors, setUniqueAuthors] = useState<number>(0);
-
-  useEffect(() => {
-    // Fetch books data
-    async function fetchBooks() {
-      try {
-        const response = await fetch("http://localhost:4000/books");
-        const data: Book[] = await response.json();
-        setBooks(data);
-
-        // Calculate unique authors
-        const authorsSet = new Set(data.map((book) => book.author));
-        setUniqueAuthors(authorsSet.size);
-      } catch (error) {
-        console.error("Error fetching books:", error);
-      }
-    }
-
-    fetchBooks();
-  }, []);
 
   return (
     <SidebarProvider>

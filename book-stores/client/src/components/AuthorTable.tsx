@@ -35,7 +35,7 @@ export default function AuthorsTable() {
     if (confirm("Are you sure you want to delete this author?")) {
       try {
         await deleteAuthor(id);
-        setAuthors(authors.filter((author) => author.id !== id)); // Update state
+        setAuthors(authors.filter((author) => author.id !== id));
       } catch (error) {
         console.error("Error deleting author:", error);
       }
