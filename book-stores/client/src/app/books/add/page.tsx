@@ -9,9 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { addBook, getAuthors } from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { bookSchema } from "@/lib/validationSchemas/bookSchema"; // import the Zod schema
+import { bookSchema } from "@/lib/validationSchemas/bookSchema";
 
 interface Book {
+  is: string;
   name: string;
   author: string;
   price: string;

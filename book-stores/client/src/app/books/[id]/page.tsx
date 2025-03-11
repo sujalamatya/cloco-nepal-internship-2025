@@ -22,12 +22,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Import Zod validation schema and resolver
+import { zodResolver } from "@hookform/resolvers/zod";
+import { bookSchema } from "@/lib/validationSchemas/bookSchema"; // Adjust path as necessary
+
 // Define the Book type
 interface Book {
   id: string;
-  title: string;
+  name: string;
   author: string; // Foreign key ID for author
-  price: string;
+  price: number;
   stock_quantity: number;
   category: string; // Foreign key ID for category
   publisher: string; // Foreign key ID for publisher
@@ -57,7 +61,9 @@ export default function EditBook({ params }: EditBookProps) {
     setValue,
     reset,
     formState: { errors },
-  } = useForm<Book>();
+  } = useForm<Book>({
+    resolver: zodResolver(bookSchema),
+  });
 
   // Fetch book and foreign key data when the component mounts
   useEffect(() => {
@@ -109,13 +115,10 @@ export default function EditBook({ params }: EditBookProps) {
           >
             {/* Book Title */}
             <div>
-              <Label htmlFor="title">Book Title</Label>
-              <Input
-                id="title"
-                {...register("title", { required: "Title is required" })}
-              />
-              {errors.title && (
-                <p className="text-red-500 text-sm">{errors.title.message}</p>
+              <Label htmlFor="name">Book Name</Label>
+              <Input id="name" {...register("name")} />
+              {errors.name && (
+                <p className="text-red-500 text-sm">{errors.name.message}</p>
               )}
             </div>
 
@@ -195,11 +198,7 @@ export default function EditBook({ params }: EditBookProps) {
             {/* Price */}
             <div>
               <Label htmlFor="price">Price (Rs.)</Label>
-              <Input
-                id="price"
-                type="number"
-                {...register("price", { required: "Price is required" })}
-              />
+              <Input id="price" type="number" {...register("price")} />
               {errors.price && (
                 <p className="text-red-500 text-sm">{errors.price.message}</p>
               )}
@@ -211,9 +210,7 @@ export default function EditBook({ params }: EditBookProps) {
               <Input
                 id="stock_quantity"
                 type="number"
-                {...register("stock_quantity", {
-                  required: "Stock quantity is required",
-                })}
+                {...register("stock_quantity")}
               />
               {errors.stock_quantity && (
                 <p className="text-red-500 text-sm">
